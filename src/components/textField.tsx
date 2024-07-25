@@ -17,7 +17,7 @@ export interface TextFieldProps {
 
 const TextField = React.forwardRef<HTMLInputElement, TextFieldProps>(
   (props, ref) => {
-    const password = props.password || false;
+    const password = props.password ?? false;
     const [showPassword, setShowPassword] = useState<boolean>(false);
 
     const input = (

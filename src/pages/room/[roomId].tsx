@@ -27,10 +27,13 @@ const Room = () => {
       console.log("SOCKET CONNECTED!", socket.id);
     });
 
-    socket.on("message", ({ name, message }) => {
-      console.log("message", name, message);
-      setMessages((prev) => [...prev, { name, message }]);
-    });
+    socket.on(
+      "message",
+      ({ name, message }: { name: string; message: string }) => {
+        console.log("message", name, message);
+        setMessages((prev) => [...prev, { name, message }]);
+      },
+    );
 
     if (!name) {
       const sessionName = sessionStorage.getItem("name");
@@ -59,14 +62,17 @@ const Room = () => {
     <main className="from-thd-brand flex min-h-screen flex-col items-center justify-center bg-gradient-to-t to-neutral-50">
       <div>
         <h1 className="text-5xl text-white">
-          {(roomQuery.data as any)?.leader}'s room
+          {(roomQuery.data as any)?.leader}&apos;s room
         </h1>
         <p className="text-xl text-white">ID: {roomId}</p>
       </div>
       <div className="flex h-96 w-96 flex-col rounded-xl bg-neutral-50 shadow-lg">
         <div className="flex grow flex-col gap-1 p-4">
           {messages.map((message, index) => (
-            <div className="flex flex-row gap-2 rounded-md bg-neutral-100">
+            <div
+              key={index}
+              className="flex flex-row gap-2 rounded-md bg-neutral-100"
+            >
               <p key={`name${index}`} className="text-thd-brand">
                 {message.name}
               </p>
