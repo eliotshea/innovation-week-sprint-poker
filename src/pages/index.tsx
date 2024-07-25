@@ -60,8 +60,8 @@ export default function Home() {
               />
               <Button
                 className="w-full"
-                onClick={() => {
-                  handleSubmitCreateRoom(async (data) => {
+                onClick={async () => {
+                  await handleSubmitCreateRoom(async (data) => {
                     const res = await createRoom.mutateAsync(data);
 
                     if (res.error) {
@@ -70,7 +70,7 @@ export default function Home() {
                       });
                     } else {
                       sessionStorage.setItem("name", data.name);
-                      router.push(`/room/${(res as any).id}`);
+                      await router.push(`/room/${(res as any).id}`);
                     }
                   })();
                 }}
@@ -99,8 +99,8 @@ export default function Home() {
               />
               <Button
                 className="w-full"
-                onClick={() => {
-                  handleSubmitJoinRoom(async (data) => {
+                onClick={async () => {
+                  await handleSubmitJoinRoom(async (data) => {
                     const res = await joinRoom.mutateAsync(data);
 
                     if (res.error) {
@@ -109,7 +109,7 @@ export default function Home() {
                       });
                     } else {
                       sessionStorage.setItem("name", data.name);
-                      router.push(`/room/${(res as any).id}`);
+                      await router.push(`/room/${(res as any).id}`);
                     }
                   })();
                 }}

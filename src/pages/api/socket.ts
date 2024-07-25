@@ -23,9 +23,9 @@ export default async (req: NextApiRequest, res: NextApiResponseServerIO) => {
     res.socket.server.io = io;
 
     io.on("connection", (socket) => {
-      socket.on("join-room", async ({ roomId, name } ) => {
+      socket.on("join-room", async ({ roomId, name }: {roomId: string, name: string} ) => {
         console.log("join-room", roomId, name);
-        socket.join(roomId);
+        await socket.join(roomId);
         try {
           const room = await db.room.findUnique({
             where: {
@@ -50,7 +50,7 @@ export default async (req: NextApiRequest, res: NextApiResponseServerIO) => {
         }
       });
 
-      socket.on("message", ({ roomId, name, message }) => {
+      socket.on("message", ({ roomId, name, message }: {roomId: string, name: string, message: string}) => {
         console.log("message", roomId, name, message);
         io.to(roomId).emit("message", { name, message });
       });
