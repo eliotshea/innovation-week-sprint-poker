@@ -2,6 +2,8 @@ import { NextApiRequest,  } from "next";
 import { NextApiResponseServerIO } from "~/types/next";
 import { Server as ServerIO } from "socket.io";
 import { Server as NetServer } from "http";
+import { db } from "~/server/db";
+import { socket } from "../_app";
 
 export const config = {
   api: {
@@ -19,6 +21,41 @@ export default async (req: NextApiRequest, res: NextApiResponseServerIO) => {
     });
     // append SocketIO server to Next.js socket server response
     res.socket.server.io = io;
+
+    io.on("connection", (socket) => {
+      socket.on("join-room", async ({ roomId, name } ) => {
+        console.log("join-room", roomId, name);
+        socket.join(roomId);
+        try {
+          const room = await db.room.findUnique({
+            where: {
+              id: roomId,
+            }
+          });
+
+          if (room && (!room.members.includes(name) || room.leader === name)) {
+            await db.room.update({
+              where: {
+                id: roomId,
+              },
+              data: {
+                members: {
+                  push: name,
+                }
+              }
+            })
+          }  
+        } catch {
+          console.log("Room not found");
+        }
+      });
+
+      socket.on("message", ({ roomId, name, message }) => {
+        console.log("message", roomId, name, message);
+        io.to(roomId).emit("message", { name, message });
+      });
+      
+    })
   }
   res.end();
 };
