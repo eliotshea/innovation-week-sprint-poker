@@ -5,7 +5,12 @@ import { type AppType } from "next/app";
 
 import { api } from "~/utils/api";
 
+export const socket = io({
+  path: "/api/socket",
+});
+
 import "~/styles/globals.css";
+import { io } from "socket.io-client";
 
 const MyApp: AppType<{ session: Session | null }> = ({
   Component,
