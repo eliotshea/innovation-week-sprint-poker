@@ -8,6 +8,9 @@ export default {
       fontFamily: {
         sans: ["var(--font-geist-sans)", ...fontFamily.sans],
       },
+      colors: {
+        "thd-brand": "#F96302"
+      }
     },
   },
   plugins: [],
