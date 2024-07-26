@@ -102,7 +102,11 @@ const Room = () => {
       </div>
       <div className="mt-8 flex flex-row gap-8 rounded-xl bg-neutral-50 p-12 shadow-lg">
         <div className="border-r-2 pr-8 text-center">
-          <Avatar name={roomQuery.data?.leader} variant="beam" size={128} />
+          <Avatar
+            name={roomQuery.data?.leader ?? "LEADER"}
+            variant="beam"
+            size={128}
+          />
           <h3>{roomQuery.data?.leader}</h3>
         </div>
         <div className="flex flex-row gap-8">

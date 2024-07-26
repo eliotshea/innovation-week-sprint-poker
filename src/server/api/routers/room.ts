@@ -80,6 +80,9 @@ export const roomRouter = createTRPCRouter({
     .query(async ({ input, ctx }) => {
       if (!input) {
         return {
+          id: null,
+          leader: null,
+          members: [],
           error: "You must enter a room ID",
         };
       }
@@ -91,12 +94,20 @@ export const roomRouter = createTRPCRouter({
           },
         });
 
-        return {
-          ...room,
-          error: null,
-        };
+        if (room) {
+          return {
+            ...room,
+            error: null,
+          };
+        } else {
+          throw new Error("Room not found");
+        }
+
       } catch {
         return {
+          id: null,
+          leader: null,
+          members: [],
           error: "Failed to get room",
         };
       }
