@@ -25,6 +25,9 @@ export const roomRouter = createTRPCRouter({
         };
       } catch {
         return {
+          id: null,
+          leader: null,
+          members: [],
           error: "Failed to create room",
         };
       }
