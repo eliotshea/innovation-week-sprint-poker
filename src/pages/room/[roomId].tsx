@@ -1,6 +1,7 @@
 // Import dependencies
 import { useRouter } from "next/router";
 import { socket } from "../_app";
+import Avatar from "boring-avatars";
 import { useEffect, useState } from "react";
 import TextField from "~/components/textField";
 import Button from "~/components/button";
@@ -52,14 +53,14 @@ const Room = () => {
     }
   }, [name, roomId]);
 
-  console.log(roomQuery.data);
-
   if (roomQuery.data?.error) {
     return <div>{roomQuery.data.error}</div>;
   }
 
+  console.log(roomQuery.data);
+
   return (
-    <main className="from-thd-brand flex min-h-screen flex-col items-center justify-center bg-gradient-to-t to-neutral-50">
+    <main className="flex min-h-screen flex-col items-center justify-center bg-gradient-to-t from-thd-brand to-neutral-50">
       <div>
         <h1 className="text-5xl text-white">
           {(roomQuery.data as any)?.leader}&apos;s room
@@ -99,6 +100,21 @@ const Room = () => {
           </Button>
         </div>
       </div>
+      <div className="mt-8 flex flex-row gap-8 rounded-xl bg-neutral-50 p-12 shadow-lg">
+        <div className="border-r-2 pr-8 text-center">
+          <Avatar name={roomQuery.data?.leader} variant="beam" size={128} />
+          <h3>{roomQuery.data?.leader}</h3>
+        </div>
+        <div className="flex flex-row gap-8">
+          {roomQuery.data?.members.map((member: string, index: number) => (
+            <div key={index} className="text-center">
+              <Avatar name={member} variant="beam" size={128} />
+              <h3>{member}</h3>
+            </div>
+          ))}
+        </div>
+      </div>
+
       <div className="mt-4 text-white">Logged in as: {name}</div>
     </main>
   );
