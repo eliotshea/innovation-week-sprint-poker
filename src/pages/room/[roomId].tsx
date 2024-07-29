@@ -168,21 +168,19 @@ const Room = () => {
           {
             uniqueUsers?.map((person: string) => <div key={person} className="pt-4 pl-6">{!pointed ? `${person}:` : ''}</div>)
           }
-        </div>
         <div className="flex flex-row pl-6">
           {pointed ? <div className="pt-2 pr-2.5">&#9989;</div> : ''}
           {
             votes?.map( vote => <div className="flex flex-row" key={vote.name}>
-              <div className="pt-2" key={vote.name}>
-                <div>{vote.name}:</div>
+                <div className="pt-2">{vote.name}:</div>
                 <div className="pt-2 pl-6">
                   <div className={`${!showVotes ? "w-12 h-5 bg-slate-900": ''}`}>
                     {pointed ? vote.vote : ''}
                   </div>
                 </div>
-                </div> 
             </div>)
           }
+          </div>
 
         </div>
 
