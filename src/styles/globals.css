@@ -1,3 +1,70 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@property --gradient-angle {
+  syntax: "<angle>";
+  initial-value: 0deg;
+  inherits: false;
+}
+
+:root {
+  --clr-1: #f96302;
+  --clr-2: #ff8800;
+  --clr-3: hsl(23, 99%, 70%);
+  --clr-4: #ffc5a0;
+  --clr-5: #ffffff;
+}
+
+.poker-card::before,
+.poker-card::after {
+  content: "";
+  position: absolute;
+  inset: -0.5rem;
+  z-index: -5;
+  background: conic-gradient(
+    from var(--gradient-angle),
+    var(--clr-4),
+    var(--clr-5),
+    var(--clr-4)
+  );
+  border-radius: inherit;
+  animation: rotation 20s linear infinite;
+}
+
+.poker-card::after {
+  filter: blur(0.1rem);
+}
+
+.poker-card:hover::after {
+  filter: blur(0.7rem);
+}
+
+@keyframes rotation {
+  0% {
+    --gradient-angle: 0deg;
+  }
+  100% {
+    --gradient-angle: 360deg;
+  }
+}
+
+.vote-card {
+  transform-style: preserve-3d;
+}
+
+.vote-card.flip {
+  transform: rotateY(180deg);
+}
+
+.card-front,
+.card-back {
+  border-radius: inherit;
+  position: absolute;
+  backface-visibility: hidden;
+}
+
+.card-back {
+  transform: rotateY(180deg);
+}
+

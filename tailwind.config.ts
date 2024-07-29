@@ -10,8 +10,14 @@ export default {
         sans: ["var(--font-geist-sans)", ...fontFamily.sans],
       },
       colors: {
-        "thd-brand": "#F96302"
+        "thd-brand": "#F96302",
+        "thd-brand-hover": "#C24E04"
       },
+      minWidth: {
+        "1/4": "25%",
+        "1/2": "50%",
+        "3/4": "75%",
+      }, 
       rotate: {
         "card-1": "-20deg",
         "card-2": "-15deg",
