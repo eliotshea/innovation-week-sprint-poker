@@ -11,7 +11,7 @@ export interface ButtonProps {
   id?: string;
   square?: boolean;
   pill?: boolean;
-  value?: string
+  value?: string;
 }
 
 const Button = ({
@@ -23,7 +23,7 @@ const Button = ({
   square = false,
   pill = false,
   type = "primary",
-  value
+  value,
 }: ButtonProps) => {
   const squareClass = classNames(
     "py-2 text-neutral-50  disabled:cursor-not-allowed disabled:opacity-50",
@@ -31,7 +31,7 @@ const Button = ({
     pill ? "rounded-full" : "rounded-lg",
     className,
     {
-      "bg-thd-brand hover:bg-brand-primary-hover": type === "primary",
+      "bg-thd-brand hover:bg-thd-brand-hover": type === "primary",
       "bg-red-500 hover:bg-red-600": type === "cancel",
     },
   );
