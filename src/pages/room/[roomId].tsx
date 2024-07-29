@@ -54,9 +54,9 @@ const Room = () => {
       },
     );
 
-    socket.on("joined-room", ({ name }: { name: string }) => {
+    socket.on("joined-room", async ({ name }: { name: string }) => {
       console.log("joined-room", name);
-      roomQuery.refetch();
+      await roomQuery.refetch();
     });
 
     socket.on("vote", ({ name, vote }: { name: string; vote: string }) => {
