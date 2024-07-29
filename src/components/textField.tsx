@@ -9,6 +9,7 @@ export interface TextFieldProps {
   className?: string;
   onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
   onBlur?: (event: React.FocusEvent<HTMLInputElement>) => void;
+  onKeyDown?: (event: React.KeyboardEvent<HTMLInputElement>) => void;
   name?: string;
   error?: string | null;
   required?: boolean;
@@ -36,6 +37,7 @@ const TextField = React.forwardRef<HTMLInputElement, TextFieldProps>(
         autoComplete={props.autoComplete ? "on" : "off"}
         onChange={props.onChange}
         onBlur={props.onBlur}
+        onKeyDown={props.onKeyDown}
         name={props.name}
         ref={ref}
       />
