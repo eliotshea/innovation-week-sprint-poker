@@ -1,5 +1,6 @@
 import { type Config } from "tailwindcss";
-import { fontFamily } from "tailwindcss/defaultTheme";
+import { fontFamily } from "tailwindcss/defaultTheme"; 
+import plugin from "tailwindcss/plugin";
 
 export default {
   content: ["./src/**/*.tsx"],
@@ -10,8 +11,30 @@ export default {
       },
       colors: {
         "thd-brand": "#F96302"
+      },
+      rotate: {
+        "card-1": "-20deg",
+        "card-2": "-15deg",
+        "card-3": "-10deg",
+        "card-4": "-5deg",
+        "card-5": "0deg",
+        "card-6": "5deg",
+        "card-7": "10deg",
+        "card-8": "15deg",
+        "card-9": "20deg",
       }
     },
   },
-  plugins: [],
+  plugins: [
+    plugin(({ addUtilities }: {addUtilities: any}) => {
+      addUtilities({
+        '.scrollbar-none': {
+          '&::-webkit-scrollbar': {
+            'display': 'none'
+          },
+          'scrollbar-width': 'none',
+        }
+      })
+    })
+  ],
 } satisfies Config;
