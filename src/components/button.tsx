@@ -11,6 +11,7 @@ export interface ButtonProps {
   id?: string;
   square?: boolean;
   pill?: boolean;
+  value?: string
 }
 
 const Button = ({
@@ -22,6 +23,7 @@ const Button = ({
   square = false,
   pill = false,
   type = "primary",
+  value
 }: ButtonProps) => {
   const squareClass = classNames(
     "py-2 text-neutral-50  disabled:cursor-not-allowed disabled:opacity-50",
@@ -40,6 +42,7 @@ const Button = ({
       disabled={disabled}
       className={squareClass}
       id={id}
+      value={value}
     >
       {children}
     </button>
