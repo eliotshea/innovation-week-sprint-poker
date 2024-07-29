@@ -48,6 +48,7 @@ export default async (req: NextApiRequest, res: NextApiResponseServerIO) => {
           }
 
           io.to(roomId).emit("message", { name: "System", message: `${name} has joined the room` });
+          io.to(roomId).emit("joined-room", { name: "System", message: `${name} has joined the room` });
         } catch {
           console.log("Room not found");
         }
