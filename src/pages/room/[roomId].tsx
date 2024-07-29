@@ -2,7 +2,7 @@
 import { useRouter } from "next/router";
 import { socket } from "../_app";
 import Avatar from "boring-avatars";
-import { useEffect, useState } from "react";
+import { SyntheticEvent, useEffect, useState } from "react";
 import TextField from "~/components/textField";
 import Button from "~/components/button";
 import { api } from "~/utils/api";
@@ -27,8 +27,7 @@ const Room = () => {
   const [showVotes, setShowVotes] = useState(false);
   const [pointed, setPointed]= useState(false);
   const pointsArray = ['0', '0.5', '1', '2', '3', '5', '8', '13', '21'];
-  console.log(roomQuery, 'roomQuery');
-  const uniqueUsers = roomQuery?.data?.members.filter((value, index, array) => {
+  const uniqueUsers = roomQuery?.data?.members.filter((value : string, index: number, array: string[]) => {
     return array.indexOf(value) === index
   });
 
@@ -76,8 +75,9 @@ const Room = () => {
     return <div>{roomQuery.data.error}</div>;
   }
 
-  const handlePointClick = (e) => {
-    const vote = e.target.value;
+  const handlePointClick = (e : SyntheticEvent) => {
+    const vote = (e.target as HTMLInputElement).value;
+    console.log(vote, 'TestedVote')
     setPointed(true);
     socket.emit("vote", {roomId, name, vote});
   }
@@ -166,13 +166,13 @@ const Room = () => {
       <div className="pt-10">
         <div className="flex h-96 w-96 flex-col rounded-xl bg-neutral-50 shadow-lg">
           {
-            uniqueUsers?.map(person => <div className="pt-4 pl-6">{!pointed ? `${person}:` : ''}</div>)
+            uniqueUsers?.map((person: string) => <div key={person} className="pt-4 pl-6">{!pointed ? `${person}:` : ''}</div>)
           }
         </div>
         <div className="flex flex-row pl-6">
           {pointed ? <div className="pt-2 pr-2.5">&#9989;</div> : ''}
           {
-            votes?.map( vote => <div className="flex flex-row">
+            votes?.map( vote => <div className="flex flex-row" key={vote.name}>
               <div className="pt-2" key={vote.name}>
                 <div>{vote.name}:</div>
                 <div className="pt-2 pl-6">
