@@ -20,16 +20,16 @@ const Room = () => {
   const [messages, setMessages] = useState<{ name: string; message: string }[]>(
     [],
   );
-  const [votes, setVotes] = useState<{ name: string; vote: string }[]>(
-    [],
-  );
+  const [votes, setVotes] = useState<{ [key: string]: number }>({});
   const [message, setMessage] = useState<string>("");
   const [showVotes, setShowVotes] = useState(false);
-  const [pointed, setPointed]= useState(false);
-  const pointsArray = ['0', '0.5', '1', '2', '3', '5', '8', '13', '21'];
-  const uniqueUsers = roomQuery?.data?.members.filter((value : string, index: number, array: string[]) => {
-    return array.indexOf(value) === index
-  });
+  const [pointed, setPointed] = useState(false);
+  const pointsArray = ["0", "0.5", "1", "2", "3", "5", "8", "13", "21"];
+  const uniqueUsers = roomQuery?.data?.members.filter(
+    (value: string, index: number, array: string[]) => {
+      return array.indexOf(value) === index;
+    },
+  );
 
   useEffect(() => {
     // log socket connection
@@ -45,13 +45,10 @@ const Room = () => {
       },
     );
 
-    socket.on(
-      "vote",
-      ({ name, vote }: { name: string; vote: string }) => {
-        console.log("vote", name, message);
-        setVotes((prev) => [{ name, vote }]);
-      },
-    );
+    socket.on("vote", ({ name, vote }: { name: string; vote: string }) => {
+      console.log("vote", name, message);
+      setVotes((prev) => [{ name, vote }]);
+    });
 
     if (!name) {
       const sessionName = sessionStorage.getItem("name");
@@ -75,17 +72,17 @@ const Room = () => {
     return <div>{roomQuery.data.error}</div>;
   }
 
-  const handlePointClick = (e : SyntheticEvent) => {
+  const handlePointClick = (e: SyntheticEvent) => {
     const vote = (e.target as HTMLInputElement).value;
-    console.log(vote, 'TestedVote')
+    console.log(vote, "TestedVote");
     setPointed(true);
-    socket.emit("vote", {roomId, name, vote});
-  }
+    socket.emit("vote", { roomId, name, vote });
+  };
 
   const handleShowVotesClick = () => {
     setShowVotes(true);
-  }
- 
+  };
+
   console.log(roomQuery.data);
 
   return (
@@ -151,43 +148,58 @@ const Room = () => {
       <div className="mt-4 text-white">Logged in as: {name}</div>
       <div className="flex flex-row gap-4 pt-8">
         <div>
-          <Button className="rounded-full border-2 px-10 py-3 font-semibold text-white transition hover:bg-indigo/20">Clear Votes</Button>
+          <Button className="hover:bg-indigo/20 rounded-full border-2 px-10 py-3 font-semibold text-white transition">
+            Clear Votes
+          </Button>
         </div>
         <div>
-          <Button className="rounded-full border-2 px-10 py-3 font-semibold text-white transition hover:bg-indigo/20" onClick={handleShowVotesClick}>Show Votes</Button>
+          <Button
+            className="hover:bg-indigo/20 rounded-full border-2 px-10 py-3 font-semibold text-white transition"
+            onClick={handleShowVotesClick}
+          >
+            Show Votes
+          </Button>
         </div>
       </div>
       <div className="flex gap-2 pt-8">
-        {pointsArray.map(point => <div key={point}>
-          <Button className="rounded-full border-2 px-10 py-3 font-semibold text-white transition hover:bg-indigo/20" onClick={handlePointClick} value={point}>{point}</Button>
-        </div>)}
-
+        {pointsArray.map((point) => (
+          <div key={point}>
+            <Button
+              className="hover:bg-indigo/20 rounded-full border-2 px-10 py-3 font-semibold text-white transition"
+              onClick={handlePointClick}
+              value={point}
+            >
+              {point}
+            </Button>
+          </div>
+        ))}
       </div>
       <div className="pt-10">
         <div className="flex h-96 w-96 flex-col rounded-xl bg-neutral-50 shadow-lg">
-          {
-            uniqueUsers?.map((person: string) => <div key={person} className="pt-4 pl-6">{!pointed ? `${person}:` : ''}</div>)
-          }
+          {uniqueUsers?.map((person: string) => (
+            <div key={person} className="pl-6 pt-4">
+              {!pointed ? `${person}:` : ""}
+            </div>
+          ))}
         </div>
         <div className="flex flex-row pl-6">
-          {pointed ? <div className="pt-2 pr-2.5">&#9989;</div> : ''}
-          {
-            votes?.map( vote => <div className="flex flex-row" key={vote.name}>
+          {pointed ? <div className="pr-2.5 pt-2">&#9989;</div> : ""}
+          {votes?.map((vote) => (
+            <div className="flex flex-row" key={vote.name}>
               <div className="pt-2" key={vote.name}>
                 <div>{vote.name}:</div>
-                <div className="pt-2 pl-6">
-                  <div className={`${!showVotes ? "w-12 h-5 bg-slate-900": ''}`}>
-                    {pointed ? vote.vote : ''}
+                <div className="pl-6 pt-2">
+                  <div
+                    className={`${!showVotes ? "h-5 w-12 bg-slate-900" : ""}`}
+                  >
+                    {pointed ? vote.vote : ""}
                   </div>
                 </div>
-                </div> 
-            </div>)
-          }
-
+              </div>
+            </div>
+          ))}
         </div>
-
       </div>
-
     </main>
   );
 };
