@@ -2,10 +2,12 @@
 import { useRouter } from "next/router";
 import { socket } from "../_app";
 import Avatar from "boring-avatars";
-import { SyntheticEvent, useEffect, useState } from "react";
+import { SyntheticEvent, useEffect, useRef, useState } from "react";
 import TextField from "~/components/textField";
 import Button from "~/components/button";
 import { api } from "~/utils/api";
+import classNames from "classnames";
+import { TreeShaker } from "~/components/tree-shaker";
 
 // Define the component
 const Room = () => {
@@ -20,10 +22,11 @@ const Room = () => {
   const [messages, setMessages] = useState<{ name: string; message: string }[]>(
     [],
   );
-  const [votes, setVotes] = useState<{ [key: string]: number }>({});
+  const [votes, setVotes] = useState<{ name: string; vote: string }[]>([]);
   const [message, setMessage] = useState<string>("");
   const [showVotes, setShowVotes] = useState(false);
   const [pointed, setPointed] = useState(false);
+  const messagesRef = useRef<HTMLDivElement>(null);
   const pointsArray = ["0", "0.5", "1", "2", "3", "5", "8", "13", "21"];
   const uniqueUsers = roomQuery?.data?.members.filter(
     (value: string, index: number, array: string[]) => {
@@ -42,12 +45,23 @@ const Room = () => {
       ({ name, message }: { name: string; message: string }) => {
         console.log("message", name, message);
         setMessages((prev) => [...prev, { name, message }]);
+        setTimeout(() => {
+          messagesRef.current?.scrollTo({
+            top: messagesRef.current?.scrollHeight,
+            behavior: "smooth",
+          });
+        }, 100);
       },
     );
 
+    socket.on("joined-room", ({ name }: { name: string }) => {
+      console.log("joined-room", name);
+      roomQuery.refetch();
+    });
+
     socket.on("vote", ({ name, vote }: { name: string; vote: string }) => {
       console.log("vote", name, message);
-      setVotes((prev) => [{ name, vote }]);
+      setVotes((prev) => [...prev, { name, vote }]);
     });
 
     if (!name) {
@@ -72,8 +86,8 @@ const Room = () => {
     return <div>{roomQuery.data.error}</div>;
   }
 
-  const handlePointClick = (e: SyntheticEvent) => {
-    const vote = (e.target as HTMLInputElement).value;
+  const handlePointClick = (index: number) => {
+    const vote = pointsArray[index];
     console.log(vote, "TestedVote");
     setPointed(true);
     socket.emit("vote", { roomId, name, vote });
@@ -93,8 +107,11 @@ const Room = () => {
         </h1>
         <p className="text-xl text-white">ID: {roomId}</p>
       </div>
-      <div className="flex h-96 w-96 flex-col rounded-xl bg-neutral-50 shadow-lg">
-        <div className="flex grow flex-col gap-1 p-4">
+      <div className="absolute bottom-8 right-8 flex h-96 w-96 flex-col rounded-xl bg-neutral-50 shadow-lg">
+        <div
+          className="scrollbar-none flex grow flex-col gap-1 overflow-y-scroll p-4"
+          ref={messagesRef}
+        >
           {messages.map((message, index) => (
             <div
               key={index}
@@ -114,6 +131,12 @@ const Room = () => {
             placeholder="message"
             value={message}
             onChange={(e) => setMessage(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                socket.emit("message", { roomId, name, message });
+                setMessage("");
+              }
+            }}
             className="mr-2 w-full"
           />
           <Button
@@ -161,16 +184,23 @@ const Room = () => {
           </Button>
         </div>
       </div>
-      <div className="flex gap-2 pt-8">
-        {pointsArray.map((point) => (
-          <div key={point}>
-            <Button
-              className="hover:bg-indigo/20 rounded-full border-2 px-10 py-3 font-semibold text-white transition"
-              onClick={handlePointClick}
-              value={point}
-            >
-              {point}
-            </Button>
+      <div className="flex h-64 w-64 pt-8">
+        {pointsArray.map((point, index) => (
+          <div
+            key={point}
+            className={classNames(
+              "absolute left-1/2 h-48 w-36 rounded-md bg-neutral-50 shadow-lg",
+              "cursor-pointer border-8 border-thd-brand outline-thd-brand/25",
+              "flex text-center align-middle text-7xl font-bold text-thd-brand",
+              "transition ease-in-out",
+              `rotate-card-${index + 1} origin-[center_500%] -translate-x-1/2`,
+              "hover:z-50 hover:scale-[102%] hover:shadow-2xl hover:outline",
+            )}
+            onClick={() => {
+              handlePointClick(index);
+            }}
+          >
+            <div className="mx-auto my-auto">{point}</div>
           </div>
         ))}
       </div>
@@ -200,6 +230,7 @@ const Room = () => {
           ))}
         </div>
       </div>
+      <TreeShaker />
     </main>
   );
 };
