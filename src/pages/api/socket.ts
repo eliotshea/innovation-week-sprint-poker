@@ -57,6 +57,11 @@ export default async (req: NextApiRequest, res: NextApiResponseServerIO) => {
         console.log("message", roomId, name, message);
         io.to(roomId).emit("message", { name, message });
       });
+
+      socket.on("vote", ({ roomId, name, vote }: {roomId: string, name: string, vote: string}) => {
+        console.log("vote", roomId, name, vote);
+        io.to(roomId).emit("vote", { name, vote });
+      });
       
       socket.on("disconnect", async (reason) => {
         console.log("disconnect", reason);
