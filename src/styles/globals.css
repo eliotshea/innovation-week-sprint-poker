@@ -32,13 +32,6 @@
   animation: rotation 20s linear infinite;
 }
 
-.poker-card::after {
-  filter: blur(0.1rem);
-}
-
-.poker-card:hover::after {
-  filter: blur(0.7rem);
-}
 
 @keyframes rotation {
   0% {
