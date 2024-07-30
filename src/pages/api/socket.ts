@@ -4,6 +4,7 @@ import { Server as ServerIO } from "socket.io";
 import { Server as NetServer } from "http";
 import { db } from "~/server/db";
 import { kv } from "@vercel/kv";
+import { stringify } from "querystring";
 
 export const config = {
   api: {
@@ -62,6 +63,14 @@ export default async (req: NextApiRequest, res: NextApiResponseServerIO) => {
       socket.on("vote", ({ roomId, name, vote }: {roomId: string, name: string, vote: string}) => {
         console.log("vote", roomId, name, vote);
         io.to(roomId).emit("vote", { name, vote });
+      });
+
+      socket.on("showvotes", ({roomId, showvotes}: {roomId: string, showvotes: boolean}) => {
+        io.to(roomId).emit("showvotes", {showvotes})
+      });
+
+      socket.on("clearvotes", ({roomId, clearvotes, currentvotes}: {roomId: string, clearvotes: boolean, currentvotes: Record<string, string>}) => {
+        io.to(roomId).emit("clearvotes", {clearvotes, currentvotes})
       });
       
       socket.on("disconnect", async (reason) => {

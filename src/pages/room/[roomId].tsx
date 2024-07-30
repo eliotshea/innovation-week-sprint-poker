@@ -22,17 +22,17 @@ const Room = () => {
   const [messages, setMessages] = useState<{ name: string; message: string }[]>(
     [],
   );
-  const [votes, setVotes] = useState<{ name: string; vote: string }[]>([]);
+  const [votes, setVotes] = useState< Record<string, string> >(
+    {},
+  );
   const [message, setMessage] = useState<string>("");
-  const [showVotes, setShowVotes] = useState(false);
+  const [showVotes, setShowVotes] = useState<boolean>(false);
+  const [clearVotes, setClearVotes] = useState<boolean>(false);
   const [pointed, setPointed] = useState(false);
   const messagesRef = useRef<HTMLDivElement>(null);
   const pointsArray = ["0", "0.5", "1", "2", "3", "5", "8", "13", "21"];
-  const uniqueUsers = roomQuery?.data?.members.filter(
-    (value: string, index: number, array: string[]) => {
-      return array.indexOf(value) === index;
-    },
-  );
+
+  console.log(votes, 'votes');
 
   useEffect(() => {
     // log socket connection
@@ -55,14 +55,46 @@ const Room = () => {
     );
 
     socket.on("joined-room", async ({ name }: { name: string }) => {
-      console.log("joined-room", name);
+      //console.log("joined-room", name);
       await roomQuery.refetch();
     });
 
-    socket.on("vote", ({ name, vote }: { name: string; vote: string }) => {
-      console.log("vote", name, message);
-      setVotes((prev) => [...prev, { name, vote }]);
-    });
+    socket.on(
+      "vote",
+      ({ name, vote }: { name: string; vote: string }) => {
+        //console.log("vote", name, vote);
+        setVotes({...votes, [name]: vote});
+      },
+    );
+
+    socket.on(
+      "showvotes",
+      ({ roomId, showvotes }: { roomId: string, showvotes: boolean }) => {
+        //console.log("showVotes", showvotes);
+        setShowVotes(showvotes);
+      },
+    );
+
+    socket.on(
+      "clearvotes",
+      ({ roomId, clearvotes, currentvotes }: { roomId: string, clearvotes: boolean, currentvotes: Record<string, string> }) => {
+        //console.log("clearvotes", name, clearvotes);
+        setClearVotes(clearvotes);
+        console.log(clearvotes, 'clearvotes');
+        console.log(currentvotes, 'mainvotes')
+       
+          const updatedRecord : Record<string, string> = {};
+              //console.log(votes, 'votesinsocket')
+              for (const key in currentvotes) {
+                if (currentvotes.hasOwnProperty(key)) {
+                    updatedRecord[key] = "";
+                }
+            }
+              setVotes(updatedRecord);
+              setPointed(false);
+              console.log(updatedRecord, 'votesinsocket')
+        }
+    );
 
     if (!name) {
       const sessionName = sessionStorage.getItem("name");
@@ -73,6 +105,8 @@ const Room = () => {
     return () => {
       socket.off("message");
       socket.off("vote");
+      socket.off("showvotes");
+      socket.off("clearvotes")
     };
   }, []);
 
@@ -88,16 +122,20 @@ const Room = () => {
 
   const handlePointClick = (index: number) => {
     const vote = pointsArray[index];
-    console.log(vote, "TestedVote");
     setPointed(true);
     socket.emit("vote", { roomId, name, vote });
   };
 
   const handleShowVotesClick = () => {
-    setShowVotes(true);
+    socket.emit('showvotes', {roomId, showvotes: true})
   };
 
-  console.log(roomQuery.data);
+  const handleClearVotesClick = () => {
+    socket.emit('clearvotes', {roomId, clearvotes: true, currentvotes: votes})
+  }
+
+  
+
 
   return (
     <main className="flex min-h-screen flex-col items-center justify-center bg-gradient-to-t from-thd-brand to-neutral-50">
@@ -212,6 +250,7 @@ const Room = () => {
             </div>
           ))}
         </div>
+
       )}
       {name === (roomQuery.data as any)?.leader && (
         <div className="flex flex-row gap-4 pt-8">
@@ -236,29 +275,28 @@ const Room = () => {
       {/* 
       <div className="pt-10">
         <div className="flex h-96 w-96 flex-col rounded-xl bg-neutral-50 shadow-lg">
-          {uniqueUsers?.map((person: string) => (
-            <div key={person} className="pl-6 pt-4">
-              {!pointed ? `${person}:` : ""}
-            </div>
-          ))}
-        </div>
         <div className="flex flex-row pl-6">
           {pointed ? <div className="pr-2.5 pt-2">&#9989;</div> : ""}
-          {votes?.map((vote) => (
-            <div className="flex flex-row" key={vote.name}>
-              <div className="pt-2" key={vote.name}>
-                <div>{vote.name}:</div>
+          {
+        Object.entries(votes).map(([key,value]) => {
+            return (
+              <div className="flex flex-row" key={key}>
+              {/* <div className="pt-2" key={key}> */}
+                <div className="pt-2">{key}:</div>
                 <div className="pl-6 pt-2">
                   <div
                     className={`${!showVotes ? "h-5 w-12 bg-slate-900" : ""}`}
                   >
-                    {pointed ? vote.vote : ""}
+                    {pointed ? value.toString() : ""}
                   </div>
                 </div>
-              </div>
+              {/* </div> */}
             </div>
-          ))}
+            )
+        })
+    }
         </div>
+
       </div> */}
       <TreeShaker />
     </main>
