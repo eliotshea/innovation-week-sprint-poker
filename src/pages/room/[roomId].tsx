@@ -19,6 +19,7 @@ const Room = () => {
   );
 
   const [name, setName] = useState<string>("");
+  const [nameField, setNameField] = useState<string>("");
   const [messages, setMessages] = useState<{ name: string; message: string }[]>(
     [],
   );
@@ -59,17 +60,21 @@ const Room = () => {
 
     socket.on("vote", ({ name, vote }: { name: string; vote: string }) => {
       //console.log("vote", name, vote);
-      setVotes({ ...votes, [name]: vote });
+      setVotes((prev) => {
+        return { ...prev, [name]: vote };
+      });
     });
 
-    socket.on("showvotes", ({ showvotes }: { showvotes: boolean }) => {
+    socket.on("showvotes", () => {
       //console.log("showVotes", showvotes);
-      setShowVotes(showvotes);
+      setShowVotes(true);
     });
 
     socket.on("clearvotes", () => {
       setShowVotes(false);
-      setVotes({});
+      setTimeout(() => {
+        setVotes({});
+      }, 200);
     });
 
     if (!name) {
@@ -91,9 +96,7 @@ const Room = () => {
       socket.emit("join-room", { roomId, name });
     }
 
-    if (!name) {
-      setShowEnterNameModal(true);
-    }
+    setShowEnterNameModal(!name);
   }, [name, roomId]);
 
   if (roomQuery.data?.error) {
@@ -120,13 +123,40 @@ const Room = () => {
 
   return (
     <main className="flex min-h-screen flex-col items-center justify-center bg-gradient-to-t from-thd-brand to-neutral-50">
-      <div className="absolute h-screen w-screen blur-sm"></div>
+      {showEnterNameModal && (
+        <div className="absolute z-50 flex h-screen w-screen items-center justify-center bg-neutral-800/50">
+          <div className="flex flex-col gap-4 rounded-xl bg-neutral-50 p-8 shadow-lg">
+            <h1 className="mb-4 text-2xl">Welcome to the room!</h1>
+            <h1 className="text-xl">Enter your name:</h1>
+            <TextField
+              id="name"
+              placeholder="name"
+              value={nameField}
+              onChange={(e) => setNameField(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                  sessionStorage.setItem("name", nameField);
+                  window.location.reload();
+                }
+              }}
+            />
+            <Button
+              onClick={() => {
+                sessionStorage.setItem("name", nameField);
+                window.location.reload();
+              }}
+            >
+              Submit
+            </Button>
+          </div>
+        </div>
+      )}
       <div className="flex h-3/4 w-1/2 flex-col items-center justify-center rounded-xl bg-neutral-50 p-8 shadow-lg">
         <div className="w-full text-left">
           <h1 className="text-5xl">
             {(roomQuery.data as any)?.leader}&apos;s room
           </h1>
-          <p className="text-xl">ID: {roomId}</p>
+          <p className="select-text text-xl">ID: {roomId}</p>
         </div>
         <div className="mt-8 flex w-full flex-row gap-8">
           <div className="border-r-2 pr-8 text-center">
@@ -137,7 +167,7 @@ const Room = () => {
             />
             <h3 className="mt-1 font-semibold">{roomQuery.data?.leader}</h3>
           </div>
-          <div className="flex grow flex-row justify-center gap-8">
+          <div className="flex grow flex-row flex-wrap justify-center gap-8">
             {roomQuery.data?.members.map((member: string, index: number) => (
               <div key={index} className="text-center">
                 <Avatar name={member} variant="beam" size={128} />
@@ -226,7 +256,11 @@ const Room = () => {
                 "flex text-center align-middle text-7xl font-bold text-thd-brand",
                 "transition ease-in-out",
                 `rotate-card-${index + 1} origin-[center_600%] -translate-x-1/2`,
-                "hover:z-50 hover:scale-[102%] hover:shadow-2xl hover:outline",
+                {
+                  "z-50 scale-[102%] shadow-2xl outline": votes[name] === point,
+                  "hover:z-50 hover:scale-[102%] hover:shadow-2xl hover:outline":
+                    !votes[name],
+                },
               )}
               onClick={() => {
                 handlePointClick(index);
