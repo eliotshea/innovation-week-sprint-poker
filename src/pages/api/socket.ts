@@ -65,12 +65,12 @@ export default async (req: NextApiRequest, res: NextApiResponseServerIO) => {
         io.to(roomId).emit("vote", { name, vote });
       });
 
-      socket.on("showvotes", ({roomId, showvotes}: {roomId: string, showvotes: boolean}) => {
-        io.to(roomId).emit("showvotes", {showvotes})
+      socket.on("showvotes", ({roomId}: {roomId: string}) => {
+        io.to(roomId).emit("showvotes")
       });
 
-      socket.on("clearvotes", ({roomId, clearvotes, currentvotes}: {roomId: string, clearvotes: boolean, currentvotes: Record<string, string>}) => {
-        io.to(roomId).emit("clearvotes", {clearvotes, currentvotes})
+      socket.on("clearvotes", ({roomId}: {roomId: string}) => {
+        io.to(roomId).emit("clearvotes")
       });
       
       socket.on("disconnect", async (reason) => {

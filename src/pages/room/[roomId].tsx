@@ -22,17 +22,15 @@ const Room = () => {
   const [messages, setMessages] = useState<{ name: string; message: string }[]>(
     [],
   );
-  const [votes, setVotes] = useState< Record<string, string> >(
-    {},
-  );
+  const [votes, setVotes] = useState<Record<string, string>>({});
   const [message, setMessage] = useState<string>("");
   const [showVotes, setShowVotes] = useState<boolean>(false);
-  const [clearVotes, setClearVotes] = useState<boolean>(false);
+  const [showEnterNameModal, setShowEnterNameModal] = useState<boolean>(false);
   const [pointed, setPointed] = useState(false);
   const messagesRef = useRef<HTMLDivElement>(null);
   const pointsArray = ["0", "0.5", "1", "2", "3", "5", "8", "13", "21"];
 
-  console.log(votes, 'votes');
+  console.log(votes, "votes");
 
   useEffect(() => {
     // log socket connection
@@ -59,42 +57,20 @@ const Room = () => {
       await roomQuery.refetch();
     });
 
-    socket.on(
-      "vote",
-      ({ name, vote }: { name: string; vote: string }) => {
-        //console.log("vote", name, vote);
-        setVotes({...votes, [name]: vote});
-      },
-    );
+    socket.on("vote", ({ name, vote }: { name: string; vote: string }) => {
+      //console.log("vote", name, vote);
+      setVotes({ ...votes, [name]: vote });
+    });
 
-    socket.on(
-      "showvotes",
-      ({ roomId, showvotes }: { roomId: string, showvotes: boolean }) => {
-        //console.log("showVotes", showvotes);
-        setShowVotes(showvotes);
-      },
-    );
+    socket.on("showvotes", ({ showvotes }: { showvotes: boolean }) => {
+      //console.log("showVotes", showvotes);
+      setShowVotes(showvotes);
+    });
 
-    socket.on(
-      "clearvotes",
-      ({ roomId, clearvotes, currentvotes }: { roomId: string, clearvotes: boolean, currentvotes: Record<string, string> }) => {
-        //console.log("clearvotes", name, clearvotes);
-        setClearVotes(clearvotes);
-        console.log(clearvotes, 'clearvotes');
-        console.log(currentvotes, 'mainvotes')
-       
-          const updatedRecord : Record<string, string> = {};
-              //console.log(votes, 'votesinsocket')
-              for (const key in currentvotes) {
-                if (currentvotes.hasOwnProperty(key)) {
-                    updatedRecord[key] = "";
-                }
-            }
-              setVotes(updatedRecord);
-              setPointed(false);
-              console.log(updatedRecord, 'votesinsocket')
-        }
-    );
+    socket.on("clearvotes", () => {
+      setShowVotes(false);
+      setVotes({});
+    });
 
     if (!name) {
       const sessionName = sessionStorage.getItem("name");
@@ -106,13 +82,17 @@ const Room = () => {
       socket.off("message");
       socket.off("vote");
       socket.off("showvotes");
-      socket.off("clearvotes")
+      socket.off("clearvotes");
     };
   }, []);
 
   useEffect(() => {
     if (name && roomId) {
       socket.emit("join-room", { roomId, name });
+    }
+
+    if (!name) {
+      setShowEnterNameModal(true);
     }
   }, [name, roomId]);
 
@@ -127,18 +107,20 @@ const Room = () => {
   };
 
   const handleShowVotesClick = () => {
-    socket.emit('showvotes', {roomId, showvotes: true})
+    socket.emit("showvotes", { roomId, showvotes: true });
   };
 
   const handleClearVotesClick = () => {
-    socket.emit('clearvotes', {roomId, clearvotes: true, currentvotes: votes})
-  }
-
-  
-
+    socket.emit("clearvotes", {
+      roomId,
+      clearvotes: true,
+      currentvotes: votes,
+    });
+  };
 
   return (
     <main className="flex min-h-screen flex-col items-center justify-center bg-gradient-to-t from-thd-brand to-neutral-50">
+      <div className="absolute h-screen w-screen blur-sm"></div>
       <div className="flex h-3/4 w-1/2 flex-col items-center justify-center rounded-xl bg-neutral-50 p-8 shadow-lg">
         <div className="w-full text-left">
           <h1 className="text-5xl">
@@ -170,12 +152,16 @@ const Room = () => {
                 >
                   <div
                     className={classNames(
-                      "card-front h-full w-full bg-thd-brand",
+                      "card-front h-full w-full shadow-md",
+                      {
+                        "bg-thd-brand": votes[member],
+                        "bg-neutral-300": !votes[member],
+                      },
                     )}
                   ></div>
                   <div className="card-back h-full w-full border-2 border-thd-brand">
                     <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-3xl font-bold text-thd-brand">
-                      ?
+                      {votes[member] ?? "🤔"}
                     </div>
                   </div>
                 </div>
@@ -187,7 +173,7 @@ const Room = () => {
 
       <div className="absolute bottom-8 right-8 flex h-96 w-96 flex-col rounded-xl bg-neutral-50 shadow-lg">
         <div
-          className="scrollbar-none flex grow flex-col gap-1 overflow-y-scroll px-2 pt-4"
+          className="flex grow flex-col gap-1 overflow-y-scroll px-2 pt-4 scrollbar-none"
           ref={messagesRef}
         >
           {messages.map((message, index) => (
@@ -250,20 +236,15 @@ const Room = () => {
             </div>
           ))}
         </div>
-
       )}
       {name === (roomQuery.data as any)?.leader && (
         <div className="flex flex-row gap-4 pt-8">
           <Button
             className="rounded-full px-10 py-3 font-semibold text-white transition"
-            onClick={() => {
-              setVotes([]);
-              setShowVotes(false);
-            }}
+            onClick={handleClearVotesClick}
           >
             Clear Votes
           </Button>
-
           <Button
             className="rounded-full px-10 py-3 font-semibold text-white transition"
             onClick={handleShowVotesClick}
@@ -272,32 +253,6 @@ const Room = () => {
           </Button>
         </div>
       )}
-      {/* 
-      <div className="pt-10">
-        <div className="flex h-96 w-96 flex-col rounded-xl bg-neutral-50 shadow-lg">
-        <div className="flex flex-row pl-6">
-          {pointed ? <div className="pr-2.5 pt-2">&#9989;</div> : ""}
-          {
-        Object.entries(votes).map(([key,value]) => {
-            return (
-              <div className="flex flex-row" key={key}>
-              {/* <div className="pt-2" key={key}> */}
-                <div className="pt-2">{key}:</div>
-                <div className="pl-6 pt-2">
-                  <div
-                    className={`${!showVotes ? "h-5 w-12 bg-slate-900" : ""}`}
-                  >
-                    {pointed ? value.toString() : ""}
-                  </div>
-                </div>
-              {/* </div> */}
-            </div>
-            )
-        })
-    }
-        </div>
-
-      </div> */}
       <TreeShaker />
     </main>
   );
