@@ -121,11 +121,34 @@ const Room = () => {
     });
   };
 
+  const testArray = [
+    "Eliot 1",
+    "Eliot 2",
+    "Eliot 3",
+    "Eliot 4",
+    "Eliot 5",
+    "Eliot 6",
+    "Eliot 7",
+    "Eliot 8",
+    "Eliot 9",
+    "Eliot 10",
+    "Eliot 11",
+    "Eliot 12",
+    "Eliot 13",
+    "Eliot 14",
+    "Eliot 15",
+    "Eliot 16",
+    "Eliot 17",
+    "Eliot 18",
+    "Eliot 19",
+    "Eliot 20",
+  ];
+
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center bg-gradient-to-t from-thd-brand to-neutral-50">
+    <main className="flex min-h-screen w-screen flex-col items-center justify-center overflow-hidden bg-gradient-to-t from-thd-brand to-neutral-50">
       {showEnterNameModal && (
-        <div className="absolute z-50 flex h-screen w-screen items-center justify-center bg-neutral-800/50">
-          <div className="flex flex-col gap-4 rounded-xl bg-neutral-50 p-8 shadow-lg">
+        <div className="fixed z-[99] flex h-screen w-screen touch-none items-center justify-center overflow-auto bg-neutral-800/50">
+          <div className="flex flex-col gap-4 rounded-xl bg-neutral-50 p-4 shadow-lg md:p-8">
             <h1 className="mb-4 text-2xl">Welcome to the room!</h1>
             <h1 className="text-xl">Enter your name:</h1>
             <TextField
@@ -151,57 +174,117 @@ const Room = () => {
           </div>
         </div>
       )}
-      <div className="flex h-3/4 w-1/2 flex-col items-center justify-center rounded-xl bg-neutral-50 p-8 shadow-lg">
-        <div className="w-full text-left">
-          <h1 className="text-5xl">
-            {(roomQuery.data as any)?.leader}&apos;s room
-          </h1>
-          <p className="select-text text-xl">ID: {roomId}</p>
-        </div>
-        <div className="mt-8 flex w-full flex-row gap-8">
-          <div className="border-r-2 pr-8 text-center">
+
+      <div className="m-4 flex min-w-1/2 flex-col items-center justify-center rounded-xl bg-neutral-50 p-4 shadow-lg md:p-8">
+        <div className="flex w-full flex-row justify-start border-b-2 pb-4 text-left">
+          <div className="mr-4 block md:hidden">
             <Avatar
-              name={roomQuery.data?.leader ?? "LEADER"}
+              name={(roomQuery.data as any)?.leader}
+              variant="beam"
+              size={64}
+            />
+          </div>
+
+          <div className="mr-4 hidden md:block">
+            <Avatar
+              name={(roomQuery.data as any)?.leader}
               variant="beam"
               size={128}
             />
-            <h3 className="mt-1 font-semibold">{roomQuery.data?.leader}</h3>
           </div>
-          <div className="flex grow flex-row flex-wrap justify-center gap-8">
-            {roomQuery.data?.members.map((member: string, index: number) => (
-              <div key={index} className="text-center">
+          <div className="my-auto w-full">
+            <h1 className="text-2xl md:text-5xl">
+              {(roomQuery.data as any)?.leader}&apos;s room
+            </h1>
+            <p className="select-text text-xl">ID: {roomId}</p>
+          </div>
+        </div>
+        <div className="mt-8 flex grow flex-row flex-wrap justify-center gap-4 overflow-y-auto md:max-h-[600px] md:gap-8">
+          {roomQuery.data?.members.map((member: string, index: number) => (
+            <div key={index} className="text-center">
+              <div className="hidden md:block">
                 <Avatar name={member} variant="beam" size={128} />
-                <h3 className="mt-1 font-semibold">{member}</h3>
+              </div>
+              <div className="block md:hidden">
+                <Avatar name={member} variant="beam" size={64} />
+              </div>
+              <h3 className="mt-1 font-semibold">{member}</h3>
+              <div
+                className={classNames(
+                  "vote-card relative mx-auto mt-4 h-16 w-12 rounded-md shadow-inner transition duration-700 ease-in-out",
+                  {
+                    flip: showVotes,
+                  },
+                )}
+              >
                 <div
-                  className={classNames(
-                    "vote-card relative mx-auto mt-4 h-16 w-12 rounded-md shadow-inner transition duration-700 ease-in-out",
-                    {
-                      flip: showVotes,
-                    },
-                  )}
-                >
-                  <div
-                    className={classNames(
-                      "card-front h-full w-full shadow-md",
-                      {
-                        "bg-thd-brand": votes[member],
-                        "bg-neutral-300": !votes[member],
-                      },
-                    )}
-                  ></div>
-                  <div className="card-back h-full w-full border-2 border-thd-brand">
-                    <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-3xl font-bold text-thd-brand">
-                      {votes[member] ?? "🤔"}
-                    </div>
+                  className={classNames("card-front h-full w-full shadow-md", {
+                    "bg-thd-brand": votes[member],
+                    "bg-neutral-300": !votes[member],
+                  })}
+                ></div>
+                <div className="card-back h-full w-full border-2 border-thd-brand">
+                  <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-3xl font-bold text-thd-brand">
+                    {votes[member] ?? "🤔"}
                   </div>
                 </div>
               </div>
-            ))}
-          </div>
+            </div>
+          ))}
         </div>
       </div>
 
-      <div className="absolute bottom-8 right-8 flex h-96 w-96 flex-col rounded-xl bg-neutral-50 shadow-lg">
+      <div className="text-white">Logged in as: {name}</div>
+      {name !== (roomQuery.data as any)?.leader && (
+        <div className="flex h-64 w-64 pt-8">
+          {pointsArray.map((point, index) => (
+            <div
+              key={point}
+              className={classNames(
+                "poker-card absolute left-1/2 h-36 w-24 rounded-md bg-neutral-50 shadow-lg md:h-48 md:w-36",
+                "cursor-pointer border-8 border-thd-brand outline-thd-brand/75",
+                "flex text-center align-middle text-5xl font-bold text-thd-brand md:text-7xl",
+                "transition ease-in-out",
+                `rotate-card-${index + 1} origin-[center_280%] -translate-x-1/2 md:origin-[center_600%]`,
+                {
+                  "z-40 scale-[102%] shadow-2xl outline": votes[name] === point,
+                  "hover:z-50 hover:scale-[102%] hover:shadow-2xl hover:outline":
+                    !votes[name],
+                },
+              )}
+              onClick={() => {
+                handlePointClick(index);
+              }}
+            >
+              <div className="absolute -left-1 -top-2 text-lg md:hidden">
+                {point}
+              </div>
+              <div className="absolute -bottom-2 -right-1 text-lg md:hidden">
+                {point}
+              </div>
+              <div className="mx-auto my-auto">{point}</div>
+            </div>
+          ))}
+        </div>
+      )}
+      {name === (roomQuery.data as any)?.leader && (
+        <div className="mb-8 flex flex-row gap-4 pt-8">
+          <Button
+            className="rounded-full px-10 py-3 font-semibold text-white transition"
+            onClick={handleClearVotesClick}
+          >
+            Clear Votes
+          </Button>
+          <Button
+            className="rounded-full px-10 py-3 font-semibold text-white transition"
+            onClick={handleShowVotesClick}
+          >
+            Show Votes
+          </Button>
+        </div>
+      )}
+
+      <div className="bottom-4 z-50 mb-4 flex h-64 flex-col rounded-xl bg-neutral-50 shadow-lg md:right-4 md:mb-0 md:h-64 md:w-96 lg:absolute">
         <div
           className="flex grow flex-col gap-1 overflow-y-scroll px-2 pt-4 scrollbar-none"
           ref={messagesRef}
@@ -243,50 +326,6 @@ const Room = () => {
           </Button>
         </div>
       </div>
-
-      <div className="mt-4 text-white">Logged in as: {name}</div>
-      {name !== (roomQuery.data as any)?.leader && (
-        <div className="mt-8 flex h-64 w-64 pt-8">
-          {pointsArray.map((point, index) => (
-            <div
-              key={point}
-              className={classNames(
-                "poker-card absolute left-1/2 h-48 w-36 rounded-md bg-neutral-50 shadow-lg",
-                "cursor-pointer border-8 border-thd-brand outline-thd-brand/75",
-                "flex text-center align-middle text-7xl font-bold text-thd-brand",
-                "transition ease-in-out",
-                `rotate-card-${index + 1} origin-[center_600%] -translate-x-1/2`,
-                {
-                  "z-50 scale-[102%] shadow-2xl outline": votes[name] === point,
-                  "hover:z-50 hover:scale-[102%] hover:shadow-2xl hover:outline":
-                    !votes[name],
-                },
-              )}
-              onClick={() => {
-                handlePointClick(index);
-              }}
-            >
-              <div className="mx-auto my-auto">{point}</div>
-            </div>
-          ))}
-        </div>
-      )}
-      {name === (roomQuery.data as any)?.leader && (
-        <div className="flex flex-row gap-4 pt-8">
-          <Button
-            className="rounded-full px-10 py-3 font-semibold text-white transition"
-            onClick={handleClearVotesClick}
-          >
-            Clear Votes
-          </Button>
-          <Button
-            className="rounded-full px-10 py-3 font-semibold text-white transition"
-            onClick={handleShowVotesClick}
-          >
-            Show Votes
-          </Button>
-        </div>
-      )}
       <TreeShaker />
     </main>
   );
