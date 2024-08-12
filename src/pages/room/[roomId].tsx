@@ -200,37 +200,55 @@ const Room = () => {
           </div>
         </div>
         <div className="mt-8 flex grow flex-row flex-wrap justify-center gap-4 overflow-y-auto md:max-h-[600px] md:gap-8">
-          {roomQuery.data?.members.map((member: string, index: number) => (
-            <div key={index} className="text-center">
-              <div className="hidden md:block">
-                <Avatar name={member} variant="beam" size={128} />
+          {roomQuery.data?.members.length === 0 && (
+            <button
+              className="group my-12 flex cursor-pointer flex-row align-middle text-gray-500 active:border-gray-700 active:text-gray-700"
+              onClick={() => {
+                navigator.clipboard.writeText(window.location.href);
+              }}
+            >
+              <p>Invite your team!</p>
+              <div className="relative ml-2 mt-1 h-8 w-6">
+                <div className="absolute h-4 w-3 rounded-sm border-2 border-gray-300 group-active:border-gray-400"></div>
+                <div className="absolute -top-1 left-1 h-4 w-3 rounded-sm border-2 border-gray-300 group-active:border-gray-400"></div>
               </div>
-              <div className="block md:hidden">
-                <Avatar name={member} variant="beam" size={64} />
-              </div>
-              <h3 className="mt-1 font-semibold">{member}</h3>
-              <div
-                className={classNames(
-                  "vote-card relative mx-auto mt-4 h-16 w-12 rounded-md shadow-inner transition duration-700 ease-in-out",
-                  {
-                    flip: showVotes,
-                  },
-                )}
-              >
+            </button>
+          )}
+          {roomQuery.data?.members.length !== 0 &&
+            roomQuery.data?.members.map((member: string, index: number) => (
+              <div key={index} className="text-center">
+                <div className="hidden md:block">
+                  <Avatar name={member} variant="beam" size={128} />
+                </div>
+                <div className="block md:hidden">
+                  <Avatar name={member} variant="beam" size={64} />
+                </div>
+                <h3 className="mt-1 font-semibold">{member}</h3>
                 <div
-                  className={classNames("card-front h-full w-full shadow-md", {
-                    "bg-thd-brand": votes[member],
-                    "bg-neutral-300": !votes[member],
-                  })}
-                ></div>
-                <div className="card-back h-full w-full border-2 border-thd-brand">
-                  <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-3xl font-bold text-thd-brand">
-                    {votes[member] ?? "🤔"}
+                  className={classNames(
+                    "vote-card relative mx-auto mt-4 h-16 w-12 rounded-md shadow-inner transition duration-700 ease-in-out",
+                    {
+                      flip: showVotes,
+                    },
+                  )}
+                >
+                  <div
+                    className={classNames(
+                      "card-front h-full w-full shadow-md",
+                      {
+                        "bg-thd-brand": votes[member],
+                        "bg-neutral-300": !votes[member],
+                      },
+                    )}
+                  ></div>
+                  <div className="card-back h-full w-full border-2 border-thd-brand">
+                    <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-3xl font-bold text-thd-brand">
+                      {votes[member] ?? "🤔"}
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
-          ))}
+            ))}
         </div>
       </div>
 
