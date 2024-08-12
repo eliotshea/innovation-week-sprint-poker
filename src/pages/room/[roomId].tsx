@@ -203,8 +203,8 @@ const Room = () => {
           {roomQuery.data?.members.length === 0 && (
             <button
               className="group my-12 flex cursor-pointer flex-row align-middle text-gray-500 active:border-gray-700 active:text-gray-700"
-              onClick={() => {
-                navigator.clipboard.writeText(window.location.href);
+              onClick={async () => {
+                await navigator.clipboard.writeText(window.location.href);
               }}
             >
               <p>Invite your team!</p>
