@@ -2,10 +2,10 @@ import Avatar from "boring-avatars";
 import classNames from "classnames";
 import React from "react";
 import { api } from "~/utils/api";
-import { useRoom } from "./RoomProvider";
+import { useRoomContext } from "./RoomProvider";
 
 const RoomContent: React.FC = () => {
-  const { roomId, room, showVotes } = useRoom();
+  const { roomId, room, showVotes } = useRoomContext();
   const roomQuery = api.room.getRoom.useQuery(
     (roomId as string | undefined) ?? "",
   );
@@ -54,7 +54,7 @@ const RoomContent: React.FC = () => {
         )}
         {roomQuery.data?.members.length !== 0 &&
           roomQuery.data?.members.map((member: string, index: number) => {
-            const memberHasVoted = votes.some((vote) => vote.member === member);
+            const memberVote = votes.find((vote) => vote.member === member);
 
             return (
               <div key={index} className="text-center">
@@ -77,14 +77,14 @@ const RoomContent: React.FC = () => {
                     className={classNames(
                       "card-front h-full w-full shadow-md",
                       {
-                        "bg-thd-brand": memberHasVoted,
-                        "bg-neutral-300": !memberHasVoted,
+                        "bg-thd-brand": memberVote,
+                        "bg-neutral-300": !memberVote,
                       },
                     )}
                   ></div>
                   <div className="card-back h-full w-full border-2 border-thd-brand">
                     <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-3xl font-bold text-thd-brand">
-                      {memberHasVoted ?? "🤔"}
+                      {memberVote?.points ?? "🤔"}
                     </div>
                   </div>
                 </div>

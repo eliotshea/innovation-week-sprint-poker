@@ -1,12 +1,12 @@
 import React, { useState } from "react";
 import TextField from "../atomic/textField";
 import Button from "../atomic/button";
-import { useRoom } from "./RoomProvider";
+import { useRoomContext } from "./RoomProvider";
 
 interface SetNameModalProps {}
 
 const SetNameModal: React.FC<SetNameModalProps> = () => {
-  const { showEnterNameModal } = useRoom();
+  const { showEnterNameModal } = useRoomContext();
   const [nameField, setNameField] = useState<string>("");
 
   if (!showEnterNameModal) {
