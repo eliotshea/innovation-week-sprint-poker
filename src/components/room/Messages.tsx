@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import TextField from "../atomic/textField";
 import Button from "../atomic/button";
 import { socket } from "~/pages/_app";
-import { useRoom } from "./RoomProvider";
+import { useRoomContext } from "./RoomProvider";
 
 interface MessagesProps {}
 
@@ -12,7 +12,7 @@ const Messages: React.FC<MessagesProps> = () => {
   );
   const [messageField, setMessageField] = useState<string>("");
   const messagesRef = useRef<HTMLDivElement>(null);
-  const { name, roomId } = useRoom();
+  const { name, roomId } = useRoomContext();
 
   const handleMessage = ({
     name,
