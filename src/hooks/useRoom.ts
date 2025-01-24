@@ -3,20 +3,26 @@ import { useState, useEffect } from "react";
 import { socket } from "~/pages/_app";
 import { Room } from "~/types/votes";
 
-const useRoomVotes = (roomId: string) => {
+const useRoom = (roomId: string) => {
   const [room, setRoom] = useState<Room>();
 
   const getRoom = () => {
     socket.emit("getvotes", { roomId });
   };
 
+  const handleGetVotes = (value: Room) => {
+    setRoom(value);
+  };
+
   useEffect(() => {
-    socket.on("getvotes", (value: Room) => {
-      setRoom(value);
-    });
+    socket.on("getvotes", handleGetVotes);
+    socket.on("vote", getRoom);
+    socket.on("clearvotes", getRoom);
 
     return () => {
-      socket.off("getvotes");
+      socket.off("getvotes", handleGetVotes);
+      socket.off("vote", getRoom);
+      socket.off("clearvotes", getRoom);
     };
   }, []);
 
@@ -31,4 +37,4 @@ const useRoomVotes = (roomId: string) => {
   return { room, getRoom };
 };
 
-export default useRoomVotes;
+export default useRoom;
