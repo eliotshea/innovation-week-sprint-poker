@@ -7,7 +7,6 @@ const useRoomVotes = (roomId: string) => {
   const [room, setRoom] = useState<Room>();
 
   const getRoom = () => {
-    console.log("getRoom");
     socket.emit("getvotes", { roomId });
   };
 
