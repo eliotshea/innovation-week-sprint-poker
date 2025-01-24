@@ -1,4 +1,3 @@
-import { get } from "http";
 import { useState, useEffect } from "react";
 import { socket } from "~/pages/_app";
 import { Room } from "~/types/votes";
