@@ -3,6 +3,9 @@ import plugin from "tailwindcss/plugin";
 
 export default {
   content: ["./src/**/*.tsx"],
+  future: {
+    hoverOnlyWhenSupported: true,
+  },
   theme: {
     extend: {
       fontFamily: {
