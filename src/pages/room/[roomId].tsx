@@ -19,39 +19,8 @@ const Room = () => {
   const router = useRouter();
   const { roomId } = router.query;
 
-  const roomQuery = api.room.getRoom.useQuery(
-    (roomId as string | undefined) ?? "",
-  );
-
-  const [name, setName] = useState<string>("");
-
-  useEffect(() => {
-    // log socket connection
-    socket.on("connect", () => {
-      console.log("SOCKET CONNECTED!", socket.id);
-    });
-
-    socket.on("joined-room", async ({ name }: { name: string }) => {
-      await roomQuery.refetch();
-    });
-
-    if (!name) {
-      const sessionName = sessionStorage.getItem("name");
-      if (sessionName) {
-        setName(sessionName);
-      }
-    }
-    return () => {
-      socket.off("vote");
-    };
-  }, []);
-
   if (!roomId) {
     return null;
-  }
-
-  if (roomQuery.data?.error) {
-    return <div>{roomQuery.data.error}</div>;
   }
 
   return (
@@ -60,8 +29,8 @@ const Room = () => {
         <SetNameModal />
         <RoomContent />
         <NameDisplay />
-        {name !== (roomQuery.data as any)?.leader && <PokerHand />}
-        {name === (roomQuery.data as any)?.leader && <LeaderControls />}
+        <PokerHand />
+        <LeaderControls />
         <Messages />
         <TreeShaker />
       </main>
