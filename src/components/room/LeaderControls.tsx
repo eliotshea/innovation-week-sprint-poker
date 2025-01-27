@@ -4,7 +4,8 @@ import { socket } from "~/pages/_app";
 import { useRoomContext } from "./RoomProvider";
 
 const LeaderControls: React.FC = () => {
-  const { roomId } = useRoomContext();
+  const { roomId, room, user } = useRoomContext();
+  const { name, id } = user ?? { name: "", id: "" };
 
   const handleShowVotesClick = () => {
     socket.emit("showvotes", { roomId, showvotes: true });
@@ -15,6 +16,10 @@ const LeaderControls: React.FC = () => {
       roomId,
     });
   };
+
+  if (room?.leader.id !== id || room?.leader.name !== name) {
+    return null;
+  }
 
   return (
     <div className="mb-8 flex flex-row gap-4 pt-8">
