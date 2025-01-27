@@ -6,14 +6,14 @@ import React, {
   useEffect,
 } from "react";
 import { socket } from "../../pages/_app";
-import useName from "~/hooks/useName";
+import useUser from "~/hooks/useUser";
 import useRoom from "~/hooks/useRoom";
-import { Room } from "~/types/votes";
+import { Room } from "~/types/room.schema";
 import useShowVotes from "~/hooks/useShowVotes";
 
 interface RoomContextType {
   roomId: string;
-  name: string | undefined;
+  user: { id: string; name: string } | undefined;
   showEnterNameModal: boolean;
   room: Room | undefined;
   getRoom: () => void;
@@ -26,14 +26,14 @@ export const RoomProvider: React.FC<{
   children: ReactNode;
   roomId: string;
 }> = ({ children, roomId }) => {
-  const name = useName(roomId);
+  const user = useUser(roomId);
   const { room, getRoom } = useRoom(roomId);
   const { showVotes } = useShowVotes();
-  const showEnterNameModal = !name;
+  const showEnterNameModal = !user;
 
   return (
     <RoomContext.Provider
-      value={{ roomId, name, showEnterNameModal, room, getRoom, showVotes }}
+      value={{ roomId, user, showEnterNameModal, room, getRoom, showVotes }}
     >
       {children}
     </RoomContext.Provider>

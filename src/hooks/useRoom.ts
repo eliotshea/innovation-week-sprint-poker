@@ -1,27 +1,32 @@
 import { useState, useEffect } from "react";
 import { socket } from "~/pages/_app";
-import { Room } from "~/types/votes";
+import { Room } from "~/types/room.schema";
 
 const useRoom = (roomId: string) => {
   const [room, setRoom] = useState<Room>();
 
   const getRoom = () => {
-    socket.emit("getvotes", { roomId });
+    socket.emit("get-room", { roomId });
   };
 
-  const handleGetVotes = (value: Room) => {
+  const handleGetRoom = (value: Room) => {
+    console.log(value);
     setRoom(value);
   };
 
   useEffect(() => {
-    socket.on("getvotes", handleGetVotes);
+    socket.on("get-room", handleGetRoom);
     socket.on("vote", getRoom);
     socket.on("clearvotes", getRoom);
+    socket.on("join-room", getRoom);
+
+    getRoom();
 
     return () => {
-      socket.off("getvotes", handleGetVotes);
+      socket.off("get-room", handleGetRoom);
       socket.off("vote", getRoom);
       socket.off("clearvotes", getRoom);
+      socket.off("join-room", getRoom);
     };
   }, []);
 
