@@ -20,6 +20,7 @@ export const roomRouter = createTRPCRouter({
             name: input.name,
             vote: null,
           },
+          showingVotes: false,
           members: [],
         };
         await kv.set<Room>(`room-${roomId}`, room, { ex: 60 * 60 * 2 });

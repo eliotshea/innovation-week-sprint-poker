@@ -28,7 +28,7 @@ export const RoomProvider: React.FC<{
 }> = ({ children, roomId }) => {
   const user = useUser(roomId);
   const { room, getRoom } = useRoom(roomId);
-  const { showVotes } = useShowVotes();
+  const showVotes = room?.showingVotes || false;
   const showEnterNameModal = !user;
 
   return (

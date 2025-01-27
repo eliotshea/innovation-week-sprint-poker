@@ -10,6 +10,7 @@ const RoomSchema = z.object({
   roomId: z.string(),
   leader: UserSchema,
   members: z.array(UserSchema),
+  showingVotes: z.boolean().default(false),
 });
 
 type User = z.infer<typeof UserSchema>;

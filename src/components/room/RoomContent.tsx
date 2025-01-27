@@ -24,7 +24,7 @@ const RoomContent: React.FC = () => {
           <h1 className="text-2xl md:text-5xl">
             {room?.leader.name}&apos;s room
           </h1>
-          <p className="select-text text-xl">ID: {roomId}</p>
+          <p className="text-xl select-text">ID: {roomId}</p>
         </div>
       </div>
       <div className="mt-8 flex grow flex-row flex-wrap justify-center gap-4 overflow-y-auto md:max-h-[600px] md:gap-8">
@@ -36,7 +36,7 @@ const RoomContent: React.FC = () => {
             }}
           >
             <p>Invite your team!</p>
-            <div className="relative ml-2 mt-1 h-8 w-6">
+            <div className="relative mt-1 ml-2 h-8 w-6">
               <div className="absolute h-4 w-3 rounded-xs border-2 border-gray-300 group-active:border-gray-400"></div>
               <div className="absolute -top-1 left-1 h-4 w-3 rounded-xs border-2 border-gray-300 group-active:border-gray-400"></div>
             </div>
@@ -67,13 +67,13 @@ const RoomContent: React.FC = () => {
                     className={classNames(
                       "card-front h-full w-full shadow-md",
                       {
-                        "bg-thd-brand": vote,
-                        "bg-neutral-300": !vote,
+                        "bg-thd-brand": vote !== null,
+                        "bg-neutral-300": vote === null,
                       },
                     )}
                   ></div>
-                  <div className="card-back h-full w-full border-2 border-thd-brand">
-                    <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-3xl font-bold text-thd-brand">
+                  <div className="card-back border-thd-brand h-full w-full border-2">
+                    <div className="text-thd-brand absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-3xl font-bold">
                       {vote ?? "🤔"}
                     </div>
                   </div>

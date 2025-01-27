@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
 import { socket } from "~/pages/_app";
+import { Room } from "~/types/room.schema";
 
-const useShowVotes = () => {
-  const [showVotes, setShowVotes] = useState(false);
+const useShowVotes = (room: Room | undefined) => {
+  const [showVotes, setShowVotes] = useState(room?.showingVotes || false);
 
   useEffect(() => {
     socket.on("showvotes", () => {

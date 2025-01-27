@@ -18,6 +18,7 @@ const useRoom = (roomId: string) => {
     socket.on("get-room", handleGetRoom);
     socket.on("vote", getRoom);
     socket.on("clearvotes", getRoom);
+    socket.on("showvotes", getRoom);
     socket.on("join-room", getRoom);
 
     getRoom();

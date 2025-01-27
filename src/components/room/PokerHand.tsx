@@ -48,13 +48,16 @@ const PokerHand: React.FC = () => {
   return (
     <div className="flex h-64 w-64 pt-8">
       {cardsArray.map((card, index) => {
+        if (card.selected) {
+          console.log(card);
+        }
         return (
           <div
             key={`card-${card.points}`}
             className={classNames(
               "poker-card absolute left-1/2 h-36 w-24 rounded-md bg-neutral-50 shadow-lg md:h-48 md:w-36",
-              "cursor-pointer border-8 border-thd-brand outline-thd-brand/75",
-              "flex text-center align-middle text-5xl font-bold text-thd-brand md:text-7xl",
+              "border-thd-brand outline-thd-brand/75 cursor-pointer border-8",
+              "text-thd-brand flex text-center align-middle text-5xl font-bold md:text-7xl",
               "transition ease-in-out",
               `rotate-card-${index + 1} origin-[center_280%] -translate-x-1/2 md:origin-[center_600%]`,
               {
@@ -67,10 +70,10 @@ const PokerHand: React.FC = () => {
               handlePointClick(index);
             }}
           >
-            <div className="absolute -left-1 -top-2 text-lg md:hidden">
+            <div className="absolute -top-2 -left-1 text-lg md:hidden">
               {card.points}
             </div>
-            <div className="absolute -bottom-2 -right-1 text-lg md:hidden">
+            <div className="absolute -right-1 -bottom-2 text-lg md:hidden">
               {card.points}
             </div>
             <div className="mx-auto my-auto">{card.points}</div>

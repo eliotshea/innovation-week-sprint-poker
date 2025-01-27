@@ -108,7 +108,12 @@ export default async (req: NextApiRequest, res: NextApiResponseServerIO) => {
         io.to(socket.id).emit("get-room", await kv.get<Room>(`room-${roomId}`));
       });
 
-      socket.on("showvotes", ({ roomId }: { roomId: string }) => {
+      socket.on("showvotes", async ({ roomId }: { roomId: string }) => {
+        const room = await kv.get<Room>(`room-${roomId}`);
+        if (room === null) {
+          return;
+        }
+        await kv.set<Room>(`room-${roomId}`, { ...room, showingVotes: true });
         io.to(roomId).emit("showvotes");
       });
 
@@ -122,6 +127,7 @@ export default async (req: NextApiRequest, res: NextApiResponseServerIO) => {
           `room-${roomId}`,
           {
             ...room,
+            showingVotes: false,
             members: room.members.map((member) => ({ ...member, vote: null })),
           },
           { ex: 60 * 60 * 2 },
