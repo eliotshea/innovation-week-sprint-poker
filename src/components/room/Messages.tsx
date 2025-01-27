@@ -12,7 +12,8 @@ const Messages: React.FC<MessagesProps> = () => {
   );
   const [messageField, setMessageField] = useState<string>("");
   const messagesRef = useRef<HTMLDivElement>(null);
-  const { name, roomId } = useRoomContext();
+  const { user, roomId } = useRoomContext();
+  const { name } = user ?? { name: "" };
 
   const handleMessage = ({
     name,
