@@ -5,7 +5,8 @@ export const joinRoomSchema = z.object({
     .string()
     .min(1, { message: "You must enter a name" })
     .min(3, { message: "Must be at least 3 characters long." }),
-  room: z
+  id: z.string().uuid(),
+  roomId: z
     .string()
     .min(1, { message: "You must enter a room ID" })
     .max(8, { message: "Must be a valid room ID" })
