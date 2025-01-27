@@ -25,7 +25,7 @@ const Room = () => {
 
   return (
     <RoomProvider roomId={roomId as string}>
-      <main className="flex min-h-screen w-screen flex-col items-center justify-center overflow-hidden bg-gradient-to-t from-thd-brand to-neutral-50">
+      <main className="flex min-h-screen w-screen flex-col items-center justify-center overflow-hidden bg-linear-to-t from-thd-brand to-neutral-50">
         <SetNameModal />
         <RoomContent />
         <NameDisplay />

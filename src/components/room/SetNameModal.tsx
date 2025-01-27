@@ -14,7 +14,7 @@ const SetNameModal: React.FC<SetNameModalProps> = () => {
   }
 
   return (
-    <div className="absolute inset-0 z-[99] flex h-dvh w-full touch-none items-center justify-center overflow-auto bg-neutral-800/50">
+    <div className="absolute inset-0 z-99 flex h-dvh w-full touch-none items-center justify-center overflow-auto bg-neutral-800/50">
       <div className="flex flex-col gap-4 rounded-xl bg-neutral-50 p-4 shadow-lg md:p-8">
         <h1 className="mb-4 text-2xl">Welcome to the room!</h1>
         <h1 className="text-xl">Enter your name:</h1>

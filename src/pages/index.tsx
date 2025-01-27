@@ -42,7 +42,7 @@ export default function Home() {
 
   return (
     <>
-      <main className="flex min-h-screen flex-col items-center justify-center bg-gradient-to-t from-thd-brand to-neutral-50">
+      <main className="flex min-h-screen flex-col items-center justify-center bg-linear-to-t from-thd-brand to-neutral-50">
         <div className="flex flex-col items-center gap-8 rounded-lg bg-neutral-50 p-12 shadow-lg">
           <div className="flex flex-col items-center gap-2">
             <HomeDepotLogo />

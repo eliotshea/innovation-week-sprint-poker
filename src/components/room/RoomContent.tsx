@@ -37,8 +37,8 @@ const RoomContent: React.FC = () => {
           >
             <p>Invite your team!</p>
             <div className="relative ml-2 mt-1 h-8 w-6">
-              <div className="absolute h-4 w-3 rounded-sm border-2 border-gray-300 group-active:border-gray-400"></div>
-              <div className="absolute -top-1 left-1 h-4 w-3 rounded-sm border-2 border-gray-300 group-active:border-gray-400"></div>
+              <div className="absolute h-4 w-3 rounded-xs border-2 border-gray-300 group-active:border-gray-400"></div>
+              <div className="absolute -top-1 left-1 h-4 w-3 rounded-xs border-2 border-gray-300 group-active:border-gray-400"></div>
             </div>
           </button>
         )}
