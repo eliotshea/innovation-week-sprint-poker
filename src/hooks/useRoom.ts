@@ -1,13 +1,13 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { socket } from "~/pages/_app";
-import { Room } from "~/types/room.schema";
+import { type Room } from "~/types/room.schema";
 
 const useRoom = (roomId: string) => {
   const [room, setRoom] = useState<Room>();
 
-  const getRoom = () => {
+  const getRoom = useCallback(() => {
     socket.emit("get-room", { roomId });
-  };
+  }, [roomId]);
 
   const handleGetRoom = (value: Room) => {
     console.log(value);
@@ -29,7 +29,7 @@ const useRoom = (roomId: string) => {
       socket.off("clearvotes", getRoom);
       socket.off("join-room", getRoom);
     };
-  }, []);
+  }, [getRoom]);
 
   useEffect(() => {
     window.addEventListener("focus", getRoom);
@@ -37,7 +37,7 @@ const useRoom = (roomId: string) => {
     return () => {
       window.removeEventListener("focus", getRoom);
     };
-  }, [roomId]);
+  }, [roomId, getRoom]);
 
   return { room, getRoom };
 };

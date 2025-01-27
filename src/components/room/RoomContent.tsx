@@ -1,14 +1,11 @@
 import Avatar from "boring-avatars";
 import classNames from "classnames";
 import React from "react";
-import { api } from "~/utils/api";
 import { useRoomContext } from "./RoomProvider";
-import { User } from "~/types/room.schema";
+import type { User } from "~/types/room.schema";
 
 const RoomContent: React.FC = () => {
   const { roomId, room, showVotes } = useRoomContext();
-
-  console.log(room);
 
   return (
     <div className="m-4 flex min-w-1/2 flex-col items-center justify-center rounded-xl bg-neutral-50 p-4 shadow-lg md:p-8">

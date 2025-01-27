@@ -1,15 +1,8 @@
-import React, {
-  createContext,
-  useContext,
-  useState,
-  ReactNode,
-  useEffect,
-} from "react";
-import { socket } from "../../pages/_app";
+import React, { createContext, useContext } from "react";
+import type { ReactNode } from "react";
 import useUser from "~/hooks/useUser";
 import useRoom from "~/hooks/useRoom";
-import { Room } from "~/types/room.schema";
-import useShowVotes from "~/hooks/useShowVotes";
+import type { Room } from "~/types/room.schema";
 
 interface RoomContextType {
   roomId: string;
@@ -28,7 +21,7 @@ export const RoomProvider: React.FC<{
 }> = ({ children, roomId }) => {
   const user = useUser(roomId);
   const { room, getRoom } = useRoom(roomId);
-  const showVotes = room?.showingVotes || false;
+  const showVotes = room?.showingVotes ?? false;
   const showEnterNameModal = !user;
 
   return (

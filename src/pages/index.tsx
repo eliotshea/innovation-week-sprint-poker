@@ -2,10 +2,10 @@ import TextField from "~/components/atomic/textField";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { api } from "~/utils/api";
-import { CreateRoomInput, createRoomSchema } from "~/types/createRoom.schema";
+import { type CreateRoomInput, createRoomSchema } from "~/types/createRoom.schema";
 import Button from "~/components/atomic/button";
 import { useState } from "react";
-import { JoinRoomInput, joinRoomSchema } from "~/types/joinRoom.schema";
+import { type JoinRoomInput, joinRoomSchema } from "~/types/joinRoom.schema";
 import HomeDepotLogo from "~/styles/homeDepotLogo";
 import { useRouter } from "next/router";
 

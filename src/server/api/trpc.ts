@@ -14,7 +14,6 @@ import superjson from "superjson";
 import { ZodError } from "zod";
 
 import { getServerAuthSession } from "~/server/auth";
-import { db } from "~/server/db";
 
 /**
  * 1. CONTEXT
@@ -41,7 +40,6 @@ interface CreateContextOptions {
 const createInnerTRPCContext = (opts: CreateContextOptions) => {
   return {
     session: opts.session,
-    db,
   };
 };
 

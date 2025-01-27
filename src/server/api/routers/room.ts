@@ -1,6 +1,5 @@
-import { Room } from "~/types/room.schema";
+import type { Room } from "~/types/room.schema";
 import { kv } from "@vercel/kv";
-import { z } from "zod";
 import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
 import { createRoomSchema } from "~/types/createRoom.schema";
 import { joinRoomSchema } from "~/types/joinRoom.schema";
@@ -38,27 +37,25 @@ export const roomRouter = createTRPCRouter({
         };
       }
     }),
-  join: publicProcedure
-    .input(joinRoomSchema)
-    .mutation(async ({ input, ctx }) => {
-      try {
-        const roomId = input.roomId;
-        const room = await kv.get<Room>(`room-${roomId}`);
+  join: publicProcedure.input(joinRoomSchema).mutation(async ({ input }) => {
+    try {
+      const roomId = input.roomId;
+      const room = await kv.get<Room>(`room-${roomId}`);
 
-        if (!room) {
-          return {
-            error: "Room not found",
-          };
-        }
-
+      if (!room) {
         return {
-          ...room,
-          error: null,
-        };
-      } catch {
-        return {
-          error: "Failed to join room",
+          error: "Room not found",
         };
       }
-    }),
+
+      return {
+        ...room,
+        error: null,
+      };
+    } catch {
+      return {
+        error: "Failed to join room",
+      };
+    }
+  }),
 });

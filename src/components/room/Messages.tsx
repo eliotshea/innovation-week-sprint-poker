@@ -4,9 +4,7 @@ import Button from "../atomic/button";
 import { socket } from "~/pages/_app";
 import { useRoomContext } from "./RoomProvider";
 
-interface MessagesProps {}
-
-const Messages: React.FC<MessagesProps> = () => {
+const Messages: React.FC = () => {
   const [messages, setMessages] = useState<{ name: string; message: string }[]>(
     [],
   );
@@ -42,7 +40,7 @@ const Messages: React.FC<MessagesProps> = () => {
   return (
     <div className="bottom-4 z-50 mb-4 flex h-64 flex-col rounded-xl bg-neutral-50 shadow-lg md:right-4 md:mb-0 md:h-64 md:w-96 lg:absolute">
       <div
-        className="flex grow flex-col gap-1 overflow-y-scroll px-2 pt-4 scrollbar-none"
+        className="scrollbar-none flex grow flex-col gap-1 overflow-y-scroll px-2 pt-4"
         ref={messagesRef}
       >
         {messages.map((message, index) => (

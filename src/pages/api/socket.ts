@@ -1,9 +1,9 @@
-import { NextApiRequest } from "next";
-import { NextApiResponseServerIO } from "~/types/next";
+import type { NextApiRequest } from "next";
+import type { NextApiResponseServerIO } from "~/types/next";
 import { Server as ServerIO } from "socket.io";
-import { Server as NetServer } from "http";
+import type { Server as NetServer } from "http";
 import { kv } from "@vercel/kv";
-import { Room, User } from "~/types/room.schema";
+import type { Room, User } from "~/types/room.schema";
 
 export const config = {
   api: {
@@ -11,7 +11,7 @@ export const config = {
   },
 };
 
-export default async (req: NextApiRequest, res: NextApiResponseServerIO) => {
+const socketApi = async (req: NextApiRequest, res: NextApiResponseServerIO) => {
   if (!res.socket.server.io) {
     console.log("New Socket.io server...");
     // adapt Next's net Server to http Server
@@ -84,7 +84,7 @@ export default async (req: NextApiRequest, res: NextApiResponseServerIO) => {
           vote: string;
         }) => {
           console.log("vote", roomId, name, vote);
-          const value = await await kv.get<Room>(`room-${roomId}`);
+          const value = await kv.get<Room>(`room-${roomId}`);
           if (value === null) {
             return;
           }
@@ -164,3 +164,5 @@ export default async (req: NextApiRequest, res: NextApiResponseServerIO) => {
   }
   res.end();
 };
+
+export default socketApi;

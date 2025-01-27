@@ -13,7 +13,7 @@ const useUser = (roomId: string) => {
     const storedUser = sessionStorage.getItem("user");
     if (storedUser) {
       try {
-        setUser(JSON.parse(storedUser));
+        setUser(JSON.parse(storedUser) as User);
       } catch (e) {
         console.error(e);
       }

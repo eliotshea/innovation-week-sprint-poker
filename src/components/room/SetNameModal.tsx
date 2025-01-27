@@ -3,9 +3,7 @@ import TextField from "../atomic/textField";
 import Button from "../atomic/button";
 import { useRoomContext } from "./RoomProvider";
 
-interface SetNameModalProps {}
-
-const SetNameModal: React.FC<SetNameModalProps> = () => {
+const SetNameModal: React.FC = () => {
   const { showEnterNameModal } = useRoomContext();
   const [nameField, setNameField] = useState<string>("");
 
