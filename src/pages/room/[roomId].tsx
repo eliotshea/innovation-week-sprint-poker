@@ -18,15 +18,13 @@ const Room = () => {
 
   return (
     <RoomProvider roomId={roomId as string}>
-      <main className="from-thd-brand flex min-h-screen w-screen flex-col items-center justify-center overflow-hidden bg-linear-to-t to-neutral-50">
-        <SetNameModal />
-        <RoomContent />
-        <NameDisplay />
-        <PokerHand />
-        <LeaderControls />
-        <Messages />
-        <TreeShaker />
-      </main>
+      <SetNameModal />
+      <RoomContent />
+      <NameDisplay />
+      <PokerHand />
+      <LeaderControls />
+      <Messages />
+      <TreeShaker />
     </RoomProvider>
   );
 };

@@ -42,7 +42,9 @@ const MyApp: AppType<{ session: Session | null }> = ({
         <link rel="manifest" href="/site.webmanifest" />
       </Head>
       <div className={GeistSans.className}>
-        <Component {...pageProps} />
+        <main className="from-thd-brand flex min-h-screen w-screen flex-col items-center justify-center overflow-hidden overscroll-none bg-linear-to-t to-neutral-50">
+          <Component {...pageProps} />
+        </main>
       </div>
     </SessionProvider>
   );

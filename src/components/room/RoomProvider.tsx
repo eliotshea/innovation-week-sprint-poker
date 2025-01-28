@@ -3,6 +3,7 @@ import type { ReactNode } from "react";
 import useUser from "~/hooks/useUser";
 import useRoom from "~/hooks/useRoom";
 import type { Room } from "~/types/room.schema";
+import Link from "next/link";
 
 interface RoomContextType {
   roomId: string;
@@ -28,7 +29,25 @@ export const RoomProvider: React.FC<{
     <RoomContext.Provider
       value={{ roomId, user, showEnterNameModal, room, getRoom, showVotes }}
     >
-      {children}
+      {room !== null && children}
+      {room === null && (
+        <div className="m-8 rounded-lg bg-white p-8">
+          <h1 className="mb-2 text-xl font-bold">Room not found</h1>
+          <div className="flex flex-col gap-2 text-sm font-light">
+            <span>
+              This could be because the room has timed out, or there is an error
+              in the link.
+            </span>
+            <span>
+              Please check the link or{" "}
+              <Link href="/" className="font-normal underline">
+                click here
+              </Link>{" "}
+              to create a new room.
+            </span>
+          </div>
+        </div>
+      )}
     </RoomContext.Provider>
   );
 };

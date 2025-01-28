@@ -7,9 +7,9 @@ const SetNameModal: React.FC = () => {
   const { showEnterNameModal } = useRoomContext();
   const [nameField, setNameField] = useState<string>("");
 
-  if (!showEnterNameModal) {
-    return null;
-  }
+  // if (!showEnterNameModal) {
+  //   return null;
+  // }
 
   return (
     <div className="absolute inset-0 z-99 flex h-dvh w-full touch-none items-center justify-center overflow-auto bg-neutral-800/50">
